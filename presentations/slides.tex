@@ -122,7 +122,61 @@
     \end{darkslide}
     
     % ==========================================
-    % 5. CLOSING (IMAGE TITLE SLIDE)
+    % 5. BACKGROUND IMAGE TESTING
+    % ==========================================
+    \section{Background Images}
+    \sectionframe{4. Background Images}{Testing \textbackslash setbgimage and \textbackslash clearbgimage}
+
+    % Test: background image, landscape crop, low opacity (light mode)
+    \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.15}
+    \textframe{Background Image: Light Mode (opacity 0.15)}{
+        The background image is set with \texttt{\textbackslash setbgimage[p]\{...\}\{0.15\}}.
+        \vspace{1em}
+        \begin{itemize}
+            \item Low opacity keeps the slide readable.
+            \item The image sits below all content via the \texttt{background} template.
+            \item The standard header and footer are unaffected.
+        \end{itemize}
+    }
+
+    % Test: background image, higher opacity (light mode)
+    \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.35}
+    \textframe{Background Image: Higher Opacity (0.35)}{
+        Same image, opacity raised to \texttt{0.35}.
+        \vspace{1em}
+        \begin{itemize}
+            \item The image is more prominent but text is still legible.
+            \item Experiment with opacity to suit the image and content.
+        \end{itemize}
+    }
+
+    % Test: background image in dark mode
+    \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.25}
+    \begin{darkslide}
+    \textframe{Background Image: Dark Mode (opacity 0.25)}{
+        Background image combined with \texttt{darkslide}.
+        \vspace{1em}
+        \begin{itemize}
+            \item The dark canvas renders first, then the image at reduced opacity on top.
+            \item Adjust opacity to balance image visibility and contrast.
+        \end{itemize}
+    }
+    \end{darkslide}
+
+    % Test: clearbgimage restores default (no image)
+    \clearbgimage
+    \textframe{Background Cleared}{
+        \texttt{\textbackslash clearbgimage} has been called.
+        \vspace{1em}
+        \begin{itemize}
+            \item This slide has no background image.
+            \item If a global \texttt{bgimage} option was set in \texttt{\textbackslash usetheme}, it would be restored here.
+            \item Otherwise the background returns to plain white.
+        \end{itemize}
+    }
+
+    % ==========================================
+    % 6. CLOSING (IMAGE TITLE SLIDE)
     % ==========================================
     
     % Test: Image Title Slide (No text box, just banner)
