@@ -1,185 +1,350 @@
 \documentclass[11pt, aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
 
-% Load your custom theme
-\usetheme[color={0, 0, 255}, header]{CambridgeUK}
+\usetheme[color={0, 80, 150}, header]{CambridgeUK}
 
 \begin{document}
 
-    % --- METADATA ---
-    \author{Template Tester}
-    \title[Theme Test]{Master Theme Testing Suite}
-    \subtitle{Light vs. Dark Mode Validation}
+    \author{Your Name}
+    \title[CambridgeUK]{CambridgeUK Beamer Theme}
+    \subtitle{A Complete Command Reference}
     \institute{Institute of Astronomy (IOA)}
     \date{\today}
-    \subject{Template Testing}
-    
+
     % ==========================================
-    % 1. TITLE & DIVIDER TESTING
+    % TITLE SLIDES
     % ==========================================
-    
-    % Test: Standard Title (Light)
+
+    % \titleframe[logo] -- plain title slide
+    % logo is optional: path to an institutional logo image
     \titleframe[black_ioa.png]
-    
-    \section{Standard Text Slides}
-    
-    % Test: Section Divider (Light)
-    \sectionframe{1. Standard Text Slides}{Testing Light vs. Dark environments}
-    
-    % Test: Subsection Divider (Dark)
-    \begin{darkslide}
-        \subsectionframe{Standard Text Slides}{Dark Mode Divider Test}
-    \end{darkslide}
 
     % ==========================================
-    % 2. TEXT SLIDE TESTING
+    % THEME SETUP
     % ==========================================
-    
-    % Test: Text Slide (Light)
-    \textframe{Light Mode: Text Slide}{
-        This slide validates the standard Light Mode environment.
-        \vspace{1em}
+
+    \section{Theme Setup}
+    \sectionframe{Theme Setup}{\texttt{\textbackslash usetheme} options}
+
+    \textframe{Loading the Theme}{
+        \texttt{\textbackslash usetheme[options]\{CambridgeUK\}}
+        \vspace{0.8em}
         \begin{itemize}
-            \item The background should be pure white.
-            \item The text should be standard black.
-            \item The slide title and horizontal rule should use the custom theme color.
-            \item The footer should use the standard CambridgeUS colors.
+            \item \texttt{color=\{R, G, B\}} --- accent colour in RGB (default: \texttt{0, 80, 150})
+            \item \texttt{header} --- show the section name header bar (hidden by default)
+            \item \texttt{nav} --- show Beamer navigation symbols (hidden by default)
+            \item \texttt{autosec} --- auto-insert a \texttt{\textbackslash sectionframe} at each \texttt{\textbackslash section\{\}}
+            \item \texttt{bgimage=\{path\}} --- global background image for all slides
+            \item \texttt{bgopacity=\{val\}} --- global background image opacity (default: \texttt{0.3})
+            \item \texttt{bgcrop=\{l|p\}} --- global background image crop mode (default: \texttt{l})
         \end{itemize}
     }
-    
-    % Test: Text Slide (Dark)
-    \begin{darkslide}
-    \textframe{Dark Mode: Text Slide}{
-        This slide validates the \texttt{darkslide} environment override.
-        \vspace{1em}
-        \begin{itemize}
-            \item The background should now be dark gray.
-            \item This text should automatically be white.
-            \item The horizontal rule should still be the custom theme color.
-            \item The footer blocks should have inverted to dark gray with white text.
-        \end{itemize}
-    }
-    \end{darkslide}
 
     % ==========================================
-    % 3. SPLIT FRAME TESTING
+    % TITLE SLIDES
     % ==========================================
-    \section{Split Layouts}
-    \sectionframe{2. Split Layouts}{Testing side-by-side columns}
-    
-    % Test: Split Frame (Light)
-    \splitframe[0.5\textwidth]{l}{Light Mode: Split Frame}{apj460815f8_hr.jpg}{
-        \textbf{Light Mode Column Test}
+
+    \section{Title Slides}
+    \sectionframe{Title Slides}{\texttt{\textbackslash titleframe} and \texttt{\textbackslash imagetitleframe}}
+
+    \textframe{\texttt{\textbackslash titleframe[logo]}}{
+        Produces the plain title slide shown at the start of this document.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item Reads \texttt{\textbackslash title}, \texttt{\textbackslash subtitle}, \texttt{\textbackslash author},
+                  \texttt{\textbackslash institute}, and \texttt{\textbackslash date} from the preamble
+            \item \texttt{[logo]} is optional --- path to an institutional logo image
+            \item Always rendered as a \texttt{[plain]} frame (no header or footer)
+        \end{itemize}
+    }
+
+    % \imagetitleframe[pos]{crop}{image}
+    % pos  -- banner position: north or south (default: south)
+    % crop -- l fits by height (landscape); p fits by width (portrait)
+    % image -- path to background image
+    \imagetitleframe[south]{p}{Earth_From_the_Perspective_of_Artemis_II.jpeg}
+
+    \textframe{\texttt{\textbackslash imagetitleframe[pos]\{crop\}\{image\}}}{
+        The previous slide was produced by \texttt{\textbackslash imagetitleframe}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{[pos]} --- translucent banner position: \texttt{north} or \texttt{south} (default: \texttt{south})
+            \item \texttt{crop} --- \texttt{l} fits image by height (landscape); \texttt{p} fits by width (portrait)
+            \item \texttt{image} --- path to background image
+            \item Title, subtitle, and author are drawn from preamble metadata
+            \item Always a \texttt{[plain]} frame
+        \end{itemize}
+    }
+
+    % ==========================================
+    % CONTENT SLIDES
+    % ==========================================
+
+    \section{Content Slides}
+    \sectionframe{Content Slides}{%
+        \texttt{\textbackslash textframe},
+        \texttt{\textbackslash imageframe},
+        \texttt{\textbackslash splitframe}}
+
+    \textframe{\texttt{\textbackslash textframe\{title\}\{content\}}}{
+        The standard workhorse slide --- a titled frame with free-form content.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{title} --- the frame title
+            \item \texttt{content} --- any Beamer content: text, \texttt{itemize}, columns, blocks, etc.
+            \item This very slide is a \texttt{\textbackslash textframe}
+        \end{itemize}
+    }
+
+    % \imageframe[title]{image}
+    % title -- optional frame title
+    % image -- path to image file; scaled to fit the content area, aspect ratio preserved
+    \imageframe[Centred Image Slide: \texttt{\textbackslash imageframe}]{apj460815f8_hr.jpg}
+
+    \textframe{\texttt{\textbackslash imageframe[title]\{image\}}}{
+        The previous slide was produced by \texttt{\textbackslash imageframe}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{[title]} --- optional frame title; omit for a clean full-content image
+            \item \texttt{image} --- path to image file
+            \item Scales to fit the content area with the aspect ratio preserved
+        \end{itemize}
+    }
+
+    % \splitframe[width]{align}{title}{image}{content}
+    % width -- image column width (default: 0.45\textwidth)
+    % align -- l puts image left; r puts image right
+    \splitframe[0.5\textwidth]{l}{Split Frame: Image Left --- \texttt{\textbackslash splitframe}}{apj460815f8_hr.jpg}{
+        Places an image and text side by side.
         \vspace{0.5em}
-        
-        This tests the column layout in standard mode. The image is strictly contained to the left column, and this text sits in the right column against a white background.
+        \begin{itemize}
+            \item \texttt{[width]} --- image column width (default: \texttt{0.45\textbackslash textwidth})
+            \item \texttt{align} --- \texttt{l} image left, \texttt{r} image right
+            \item \texttt{title}, \texttt{image}, \texttt{content} --- as labelled
+            \item Works inside \texttt{darkslide}
+        \end{itemize}
     }
-    
-    % Test: Split Frame (Dark)
+
+    \splitframe[0.5\textwidth]{r}{Split Frame: Image Right}{apj460815f8_hr.jpg}{
+        Same command with \texttt{align = r}.
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Image moves to the right column
+            \item Text occupies the remaining width on the left
+        \end{itemize}
+    }
+
+    % ==========================================
+    % CINEMATIC LAYOUTS
+    % ==========================================
+
+    \section{Cinematic Layouts}
+    \sectionframe{Cinematic Layouts}{\texttt{\textbackslash coverframe} and \texttt{\textbackslash coversplitframe}}
+
+    % \coverframe[crop]{image}
+    % crop  -- l fits by height (landscape); p fits by width (portrait); default: l
+    % image -- path to background image
+    \coverframe[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}
+
+    \textframe{\texttt{\textbackslash coverframe[crop]\{image\}}}{
+        The previous slide was a \texttt{\textbackslash coverframe} --- a full-bleed image with no overlaid text.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{[crop]} --- \texttt{l} fits by height; \texttt{p} fits by width (default: \texttt{l})
+            \item Always a \texttt{[plain]} frame --- no header or footer
+            \item Add a \texttt{*} to show the header and footer bars: \texttt{\textbackslash coverframe*[crop]\{image\}}
+        \end{itemize}
+    }
+
+    % \coverframe*[crop]{image} -- same but with header/footer bars visible
+    \coverframe*[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}
+
+    \textframe{\texttt{\textbackslash coverframe*} --- with Bars}{
+        The previous slide used \texttt{\textbackslash coverframe*[p]\{...\}}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item The \texttt{*} keeps the header and footer visible over the image
+            \item Useful when the section context or slide number needs to be shown
+            \item The theme colour bar and footer sit on top of the full-bleed image
+        \end{itemize}
+    }
+
+    % \coversplitframe[width]{align}{crop}{title}{image}{content}
+    % width -- textbox width (default: 0.45\paperwidth)
+    % align -- l docks box left; r docks box right
+    % crop  -- l or p (same as \coverframe)
+    % title -- shown as box header with rule; pass {} to omit
+    \coversplitframe[0.45\paperwidth]{l}{p}{Cover Split: Text Left}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
+        \textbf{\texttt{\textbackslash coversplitframe[w]\{align\}\{crop\}\{title\}\{img\}\{content\}}}
+        \vspace{0.5em}
+
+        Full-bleed image with a floating translucent text box.
+        \begin{itemize}
+            \item \texttt{[w]} --- box width (default: \texttt{0.45\textbackslash paperwidth})
+            \item \texttt{align} --- \texttt{l} docks box left; \texttt{r} docks right
+            \item \texttt{title} --- box header with decorative rule; pass \texttt{\{\}} to omit
+            \item Add \texttt{*} to show the header and footer bars
+        \end{itemize}
+    }
+
+    \coversplitframe[0.45\paperwidth]{r}{p}{}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
+        Same command with \texttt{align = r} and an empty title (\texttt{\{\}}).
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Box docks to the right edge
+            \item No title or rule is shown
+            \item Add a \texttt{*} to show the header and footer bars
+        \end{itemize}
+    }
+
+    % \coversplitframe*[width]{align}{crop}{title}{image}{content} -- with bars
+    \coversplitframe*[0.45\paperwidth]{l}{p}{Cover Split with Bars}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
+        \texttt{\textbackslash coversplitframe*} keeps the header and footer visible.
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Otherwise identical to \texttt{\textbackslash coversplitframe}
+            \item The section name bar and footer sit on top of the image
+        \end{itemize}
+    }
+
+    % ==========================================
+    % DIVIDER SLIDES
+    % ==========================================
+
+    \section{Divider Slides}
+    \sectionframe{Divider Slides}{\texttt{\textbackslash sectionframe} and \texttt{\textbackslash subsectionframe}}
+
+    \textframe{\texttt{\textbackslash sectionframe\{title\}\{subtitle\}}}{
+        The slide above this one was produced by \texttt{\textbackslash sectionframe}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{title} --- large centred section title
+            \item \texttt{subtitle} --- smaller description below the rule; pass \texttt{\{\}} to omit
+            \item Always a \texttt{[plain]} frame
+            \item Automatically inserted at each \texttt{\textbackslash section\{\}} when the \texttt{autosec} theme option is active
+        \end{itemize}
+    }
+
+    % \subsectionframe{parent}{title}
+    % parent -- small context label at top (e.g. the parent section name)
+    % title  -- large main subsection title
+    \subsectionframe{Divider Slides}{Subsection Divider: \texttt{\textbackslash subsectionframe}}
+
+    \textframe{\texttt{\textbackslash subsectionframe\{parent\}\{title\}}}{
+        The previous slide was produced by \texttt{\textbackslash subsectionframe}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item \texttt{parent} --- small label at top giving the parent section context
+            \item \texttt{title} --- large main subsection title
+            \item Useful for multi-level presentation structure
+        \end{itemize}
+    }
+
+    % ==========================================
+    % DARK MODE
+    % ==========================================
+
+    \section{Dark Mode}
+    \sectionframe{Dark Mode}{The \texttt{darkslide} environment}
+
+    % darkslide -- wraps any slide command(s) to render in dark mode
+    \begin{darkslide}
+    \textframe{The \texttt{darkslide} Environment}{
+        Wrap any slide command in \texttt{\textbackslash begin\{darkslide\}...\textbackslash end\{darkslide\}}.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item Background, text, frametitle, and footer all invert to dark
+            \item The \texttt{\textbackslash coversplitframe} text box colour also flips automatically
+            \item Multiple commands can be nested inside one \texttt{darkslide} block
+            \item The theme accent colour is preserved
+            \item Compatible with \texttt{\textbackslash setbgimage}
+        \end{itemize}
+    }
+    \end{darkslide}
+
     \begin{darkslide}
     \splitframe[0.5\textwidth]{r}{Dark Mode: Split Frame}{apj460815f8_hr.jpg}{
-        \textbf{Dark Mode Column Test}
+        \texttt{darkslide} works with \texttt{\textbackslash splitframe}.
         \vspace{0.5em}
-        
-        This tests the same column layout, but wrapped in the \texttt{darkslide} environment. The background under this text should be dark gray, while the image sits neatly on the right.
+        \begin{itemize}
+            \item Background inverts to dark
+            \item Text and bullets become white
+        \end{itemize}
     }
     \end{darkslide}
 
-    % ==========================================
-    % 4. TRANSLUCENT BOX TESTING (COVER SPLIT)
-    % ==========================================
-    \section{Cinematic Layouts}
-    \sectionframe{3. Cinematic Layouts}{Testing floating boxes over images}
-    
-    % Test: Cover Split (Light)
-    \coversplitframe[0.45\paperwidth]{l}{p}{Light Mode: Cover Split}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
-        \textbf{White Translucent Box Test}
-        \vspace{0.5em}
-        
-        Because this slide is in standard Light Mode, the floating TikZ box should have a white background with 85\% opacity, and this text should be dark.
-        \vspace{0.5em}
-        \begin{itemize}
-            \item Background: Full-bleed image.
-            \item Box: White.
-            \item Text: Dark.
-        \end{itemize}
-    }
-    
-    % Test: Cover Split (Dark)
     \begin{darkslide}
     \coversplitframe[0.45\paperwidth]{r}{p}{Dark Mode: Cover Split}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
-        \textbf{Dark Translucent Box Test}
-        \vspace{0.5em}
-        
-        Because we wrapped this slide in the \texttt{darkslide} environment, the dynamic color variables should have flipped!
+        \texttt{darkslide} works with \texttt{\textbackslash coversplitframe}.
         \vspace{0.5em}
         \begin{itemize}
-            \item Background: Full-bleed image.
-            \item Box: Dark Gray.
-            \item Text: White.
+            \item Textbox background flips to dark gray
+            \item Text flips to white
         \end{itemize}
     }
     \end{darkslide}
-    
-    % ==========================================
-    % 5. BACKGROUND IMAGE TESTING
-    % ==========================================
-    \section{Background Images}
-    \sectionframe{4. Background Images}{Testing \textbackslash setbgimage and \textbackslash clearbgimage}
 
-    % Test: background image, landscape crop, low opacity (light mode)
-    \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.15}
-    \textframe{Background Image: Light Mode (opacity 0.15)}{
-        The background image is set with \texttt{\textbackslash setbgimage[p]\{...\}\{0.15\}}.
-        \vspace{1em}
+    % ==========================================
+    % BACKGROUND IMAGES
+    % ==========================================
+
+    \section{Background Images}
+    \sectionframe{Background Images}{\texttt{\textbackslash setbgimage} and \texttt{\textbackslash clearbgimage}}
+
+    \textframe{\texttt{\textbackslash setbgimage} and \texttt{\textbackslash clearbgimage}}{
+        Persistently set a background image for all subsequent frames.
+        \vspace{0.8em}
         \begin{itemize}
-            \item Low opacity keeps the slide readable.
-            \item The image sits below all content via the \texttt{background} template.
-            \item The standard header and footer are unaffected.
+            \item \texttt{\textbackslash setbgimage[crop]\{path\}\{opacity\}} --- activates the background image
+            \item \texttt{[crop]} --- \texttt{l} or \texttt{p}, same as \texttt{\textbackslash coverframe} (default: \texttt{l})
+            \item \texttt{opacity} --- \texttt{0.0} (invisible) to \texttt{1.0} (full); \texttt{0.1}--\texttt{0.3} is typical
+            \item \texttt{\textbackslash clearbgimage} --- removes the image, restoring the global default
+            \item A global default can be set via theme options: \texttt{bgimage}, \texttt{bgopacity}, \texttt{bgcrop}
         \end{itemize}
     }
 
-    % Test: background image, higher opacity (light mode)
+    % Background image active from here
+    \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.15}
+    \textframe{Background Image: Light Mode (opacity 0.15)}{
+        \texttt{\textbackslash setbgimage[p]\{Earth\_...\}\{0.15\}} was called before this frame.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item The image is rendered inside \texttt{background canvas}, beneath all content
+            \item Header, footer, and frame title are unaffected
+            \item Low opacity keeps text legible over most images
+        \end{itemize}
+    }
+
     \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.35}
     \textframe{Background Image: Higher Opacity (0.35)}{
         Same image, opacity raised to \texttt{0.35}.
-        \vspace{1em}
+        \vspace{0.8em}
         \begin{itemize}
-            \item The image is more prominent but text is still legible.
-            \item Experiment with opacity to suit the image and content.
+            \item Image is more prominent but text readability decreases
+            \item Adjust to suit the contrast of your image and content
         \end{itemize}
     }
 
-    % Test: background image in dark mode
     \setbgimage[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}{0.25}
     \begin{darkslide}
     \textframe{Background Image: Dark Mode (opacity 0.25)}{
-        Background image combined with \texttt{darkslide}.
-        \vspace{1em}
+        \texttt{\textbackslash setbgimage} and \texttt{darkslide} can be combined.
+        \vspace{0.8em}
         \begin{itemize}
-            \item The dark canvas renders first, then the image at reduced opacity on top.
-            \item Adjust opacity to balance image visibility and contrast.
+            \item Dark canvas renders first; image is overlaid at the specified opacity
+            \item Adjust opacity to balance image visibility and text contrast
         \end{itemize}
     }
     \end{darkslide}
 
-    % Test: clearbgimage restores default (no image)
+    % Restore clean background before closing slide
     \clearbgimage
-    \textframe{Background Cleared}{
-        \texttt{\textbackslash clearbgimage} has been called.
-        \vspace{1em}
-        \begin{itemize}
-            \item This slide has no background image.
-            \item If a global \texttt{bgimage} option was set in \texttt{\textbackslash usetheme}, it would be restored here.
-            \item Otherwise the background returns to plain white.
-        \end{itemize}
-    }
 
     % ==========================================
-    % 6. CLOSING (IMAGE TITLE SLIDE)
+    % CLOSING
     % ==========================================
-    
-    % Test: Image Title Slide (No text box, just banner)
+
+    % \imagetitleframe with banner at the top
     \imagetitleframe[north]{p}{Earth_From_the_Perspective_of_Artemis_II.jpeg}
 
 \end{document}

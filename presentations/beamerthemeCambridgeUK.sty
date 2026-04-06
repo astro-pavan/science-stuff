@@ -1,6 +1,7 @@
 \ProvidesPackage{beamerthemeCambridgeUK}
 
 \RequirePackage{tikz}
+\RequirePackage{xparse}
 
 %\RequirePackage[default]{sourcesanspro} % A very clean, modern alternative to Verdana
 \RequirePackage[light]{raleway}
@@ -187,21 +188,22 @@
 
 % ---------------------------------------------------
 % Template: Full Screen Cover Image (TikZ Engine)
+% \coverframe[crop]{image}  -- no bars (default)
+% \coverframe*[crop]{image} -- with header/footer bars
+% crop: l = fit by height (landscape), p = fit by width (portrait)
 % ---------------------------------------------------
-\newcommand{\coverframe}[2][l]{
+\NewDocumentCommand{\coverframe}{s O{l} m}{
 	\def\croplandscape{l}
-	\def\usercrop{#1}
-	
-	\begin{frame}[plain]
+	\def\usercrop{#2}
+	\IfBooleanTF{#1}{\begin{frame}}{\begin{frame}[plain]}
 		\begin{tikzpicture}[remember picture, overlay]
-			% Lock the image precisely to the dead-center of the page
 			\ifx\usercrop\croplandscape
 			\node[inner sep=0pt, anchor=center] at (current page.center) {
-				\includegraphics[height=\paperheight]{#2}
+				\includegraphics[height=\paperheight]{#3}
 			};
 			\else
 			\node[inner sep=0pt, anchor=center] at (current page.center) {
-				\includegraphics[width=\paperwidth]{#2}
+				\includegraphics[width=\paperwidth]{#3}
 			};
 			\fi
 		\end{tikzpicture}
@@ -269,11 +271,11 @@
 			% Title & Subtitle
 			{\usebeamercolor[fg]{titlelike}\LARGE{\inserttitle}\par}
 			
-			\vskip0.6em
+			\vskip0.5em
 			{\color{mainthemecolor}\hrule height 0.5pt}
 			
 			\ifx\insertsubtitle\@empty\else
-			\vskip0.5em
+			\vskip0.6em
 			{\large\insertsubtitle\par}
 			\fi
 			
@@ -344,55 +346,57 @@
 
 % ---------------------------------------------------
 % Template: Floating Textbox over Full Screen Image (TikZ Engine)
+% \coversplitframe[width]{align}{crop}{title}{image}{content}  -- no bars (default)
+% \coversplitframe*[width]{align}{crop}{title}{image}{content} -- with header/footer bars
 % ---------------------------------------------------
-\newcommand{\coversplitframe}[6][0.45\paperwidth]{
+\NewDocumentCommand{\coversplitframe}{s O{0.45\paperwidth} m m m m m}{
 	\def\alignleft{l}
-	\def\useralign{#2}
+	\def\useralign{#3}
 	\def\croplandscape{l}
-	\def\usercrop{#3}
+	\def\usercrop{#4}
 	\def\notitle{}
-	\def\usertitle{#4}
-	
-	\begin{frame}[plain]
+	\def\usertitle{#5}
+
+	\IfBooleanTF{#1}{\begin{frame}}{\begin{frame}[plain]}
 		% --- 1. DRAW BACKGROUND IMAGE ---
 		\begin{tikzpicture}[remember picture, overlay]
 			\ifx\usercrop\croplandscape
 			\node[inner sep=0pt, anchor=center] at (current page.center) {
-				\includegraphics[height=\paperheight]{#5}
+				\includegraphics[height=\paperheight]{#6}
 			};
 			\else
 			\node[inner sep=0pt, anchor=center] at (current page.center) {
-				\includegraphics[width=\paperwidth]{#5}
+				\includegraphics[width=\paperwidth]{#6}
 			};
 			\fi
 		\end{tikzpicture}
-		
+
 		% --- 2. DRAW FLOATING TEXTBOX ---
 		\begin{tikzpicture}[remember picture, overlay]
 			\ifx\useralign\alignleft
 			\node[fill=transboxbg, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=west, inner sep=15pt] at ([xshift=15pt]current page.west) {
-				\begin{minipage}{#1}
+				\begin{minipage}{#2}
 					\color{transboxtext}
 					\ifx\usertitle\notitle\else
-					{\usebeamercolor[fg]{titlelike}\LARGE #4\par}
+					{\usebeamercolor[fg]{titlelike}\LARGE #5\par}
 					\vspace{0.4em}
 					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
 					\vspace{1.5em}
 					\fi
-					#6
+					#7
 				\end{minipage}
 			};
 			\else
 			\node[fill=transboxbg, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=east, inner sep=15pt] at ([xshift=-15pt]current page.east) {
-				\begin{minipage}{#1}
+				\begin{minipage}{#2}
 					\color{transboxtext}
 					\ifx\usertitle\notitle\else
-					{\usebeamercolor[fg]{titlelike}\LARGE #4\par}
+					{\usebeamercolor[fg]{titlelike}\LARGE #5\par}
 					\vspace{0.4em}
 					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
 					\vspace{1.5em}
 					\fi
-					#6
+					#7
 				\end{minipage}
 			};
 			\fi
