@@ -1,1 +1,9 @@
 /.venv
+*.toc
+*.aux
+*.nav
+*.out
+*.snm
+*.log
+*.synctex.gz
+*.pyc
