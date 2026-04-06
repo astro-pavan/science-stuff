@@ -14,12 +14,16 @@
 \@showheaderfalse 
 
 \newif\if@shownav
-\@shownavfalse 
+\@shownavfalse
+
+\newif\if@autosec
+\@autosecfalse
 
 % --- 2. LISTEN FOR PARAMETERS ---
 \DeclareOptionBeamer{color}{\def\mythemecolorval{#1}}
 \DeclareOptionBeamer{header}{\@showheadertrue}
 \DeclareOptionBeamer{nav}{\@shownavtrue}
+\DeclareOptionBeamer{autosec}{\@autosectrue}
 
 % --- 3. SET DEFAULT COLOR AND PROCESS ---
 \ExecuteOptionsBeamer{color={0, 80, 150}}
@@ -36,9 +40,6 @@
 
 \setbeamerfont{block title}{size={}}
 
-\useinnertheme[shadow=true]{rounded}
-\useoutertheme{infolines}
-
 \setbeamercolor{palette primary}{bg=mainthemecolor,fg=white}
 \setbeamercolor{palette secondary}{bg=mainthemecolor!75,fg=white}
 \setbeamercolor{palette tertiary}{bg=mainthemecolor!50,fg=white}
@@ -46,22 +47,59 @@
 \setbeamercolor{item}{fg=mainthemecolor}
 
 \if@showheader
-% If 'header' was typed, do nothing (keep the default CambridgeUS top bar)
 \else
-% Otherwise, erase it for a clean modern look
 \setbeamertemplate{headline}{} 
 \fi
 
 \if@shownav
-% If 'nav' was typed, do nothing (keep default Beamer symbols)
 \else
-% Otherwise, erase them
 \setbeamertemplate{navigation symbols}{} 
 \fi
 
+% ---------------------------------------------------
+% Environment: Per-Slide Dark Mode wrapper
+% ---------------------------------------------------
+\newenvironment{darkslide}{
+    % 1. Flip standard Beamer colors to dark
+    \setbeamercolor{normal text}{bg=black!95, fg=white}
+    \setbeamercolor{background canvas}{bg=black!95}
+
+	\setbeamertemplate{background canvas}{
+        \color{black!95}\rule{\paperwidth}{\paperheight}
+    }
+
+    % 2. Flip titles and headers
+    \setbeamercolor{frametitle}{bg=black!75, fg=white}
+    \setbeamercolor{title}{bg=black!95, fg=white}
+    \setbeamercolor{titlelike}{bg=black!95, fg=white}
+    
+    % 3. Flip the CambridgeUS footer elements
+    \setbeamercolor{author in head/foot}{bg=black!85, fg=white}
+    \setbeamercolor{title in head/foot}{bg=black!95, fg=white}
+    \setbeamercolor{date in head/foot}{bg=black!85, fg=white}
+    
+    % 4. Flip translucent TikZ box color variables (used by \coversplitframe)
+    \colorlet{transboxbg}{black!85}
+    \colorlet{transboxtext}{white}
+
+    % 5. Force LaTeX to immediately apply the new text color
+    \usebeamercolor[fg]{normal text}
+}{
+    \setbeamertemplate{background canvas}[default]
+}
+
 \setbeamertemplate{itemize items}[circle]
 
-\newcommand{\imageframe}[2][]{ % [#1] is optional title, {#2} is image path
+% Default colors for \coversplitframe translucent box (overridden by darkslide)
+\colorlet{transboxbg}{white}
+\colorlet{transboxtext}{black}
+
+% ---------------------------------------------------
+% Template: Centered Image Slide
+% #1 (Optional): Frame title
+% #2: Image path
+% ---------------------------------------------------
+\newcommand{\imageframe}[2][]{
 	\begin{frame}{#1}
 		\vspace{-0.5em} % Slight adjustment to center visually between bars
 		\begin{center}
@@ -74,7 +112,7 @@
 % ---------------------------------------------------
 % Template: Full Screen Cover Image (TikZ Engine)
 % ---------------------------------------------------
-\newcommand{\fullscreencover}[2][l]{ 
+\newcommand{\coverframe}[2][l]{
 	\def\croplandscape{l}
 	\def\usercrop{#1}
 	
@@ -102,11 +140,10 @@
 % #4: Image Path
 % #5: Text Content
 % ---------------------------------------------------
-\newcommand{\splitframe}[5][0.45\textwidth]{ 
+\newcommand{\splitframe}[5][0.45\textwidth]{
 	\def\alignleft{l}
 	\def\useralign{#2}
-	
-	% The logic now wraps the entire frame, so Beamer never gets confused!
+
 	\ifx\useralign\alignleft
 	% --- IMAGE ON THE LEFT ---
 	\begin{frame}{#3}
@@ -139,7 +176,7 @@
 % Template: Text Only
 % #1: Title, #2: Text Content
 % ---------------------------------------------------
-\newcommand{\textslide}[2]{ 
+\newcommand{\textframe}[2]{
 	\begin{frame}{#1}
 		#2
 	\end{frame}
@@ -149,14 +186,14 @@
 % Template: Plain Title Slide
 % #1 (Optional): Path to institutional logo
 % ---------------------------------------------------
-\newcommand{\plaintitleframe}[1][]{ 
+\newcommand{\titleframe}[1][]{
 	\begin{frame}[plain]
 		\vfill
 		\begin{center}
 			% Title & Subtitle
 			{\usebeamercolor[fg]{titlelike}\LARGE{\inserttitle}\par}
 			
-			\par\vspace{0.6em} % Snug the line up to the text
+			\vskip0.6em
 			{\color{mainthemecolor}\hrule height 0.5pt}
 			
 			\ifx\insertsubtitle\@empty\else
@@ -191,7 +228,7 @@
 % #2: Image Crop Mode ('l' for landscape, 'p' for portrait)
 % #3: Image Path
 % ---------------------------------------------------
-\newcommand{\imagetitleframe}[3][south]{ 
+\newcommand{\imagetitleframe}[3][south]{
 	\def\croplandscape{l}
 	\def\usercrop{#2}
 	
@@ -232,7 +269,7 @@
 % ---------------------------------------------------
 % Template: Floating Textbox over Full Screen Image (TikZ Engine)
 % ---------------------------------------------------
-\newcommand{\coversplit}[6][0.45\paperwidth]{ 
+\newcommand{\coversplitframe}[6][0.45\paperwidth]{
 	\def\alignleft{l}
 	\def\useralign{#2}
 	\def\croplandscape{l}
@@ -257,10 +294,11 @@
 		% --- 2. DRAW FLOATING TEXTBOX ---
 		\begin{tikzpicture}[remember picture, overlay]
 			\ifx\useralign\alignleft
-			\node[fill=white, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=west, inner sep=15pt] at ([xshift=15pt]current page.west) {
+			\node[fill=transboxbg, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=west, inner sep=15pt] at ([xshift=15pt]current page.west) {
 				\begin{minipage}{#1}
+					\color{transboxtext}
 					\ifx\usertitle\notitle\else
-					{\usebeamercolor[fg]{titlelike}\LARGE #4\par} 
+					{\usebeamercolor[fg]{titlelike}\LARGE #4\par}
 					\vspace{0.4em}
 					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
 					\vspace{1.5em}
@@ -269,10 +307,11 @@
 				\end{minipage}
 			};
 			\else
-			\node[fill=white, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=east, inner sep=15pt] at ([xshift=-15pt]current page.east) {
+			\node[fill=transboxbg, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=east, inner sep=15pt] at ([xshift=-15pt]current page.east) {
 				\begin{minipage}{#1}
+					\color{transboxtext}
 					\ifx\usertitle\notitle\else
-					{\usebeamercolor[fg]{titlelike}\LARGE #4\par} 
+					{\usebeamercolor[fg]{titlelike}\LARGE #4\par}
 					\vspace{0.4em}
 					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
 					\vspace{1.5em}
@@ -283,8 +322,63 @@
 			\fi
 		\end{tikzpicture}
 	\end{frame}
-	\setbeamertemplate{background canvas}{}
 }
+
+% ---------------------------------------------------
+% Template: Section Divider Slide
+% #1: Section Title
+% #2: Subtitle / Description (Leave empty {} for none)
+% ---------------------------------------------------
+\newcommand{\sectionframe}[2]{
+    \begin{frame}[plain]
+        \vfill
+        \begin{center}
+            % Main Section Title
+            {\usebeamercolor[fg]{titlelike}\LARGE #1\par}
+            \vspace{0.4em}
+            
+            % Thin horizontal line
+            {\color{mainthemecolor}\rule{0.3\textwidth}{0.4pt}}\par
+            
+            % Subtitle logic
+            \def\emptysub{}
+            \def\usersub{#2}
+            \ifx\usersub\emptysub\else
+                \vspace{1em}
+                {\usebeamercolor[fg]{normal text}\large #2\par}
+            \fi
+        \end{center}
+        \vfill
+    \end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Subsection Divider Slide
+% #1: Parent Section Name (To give the audience context)
+% #2: Subsection Name
+% ---------------------------------------------------
+\newcommand{\subsectionframe}[2]{
+    \begin{frame}[plain]
+        \vfill
+        \begin{center}
+            % Tiny Parent Section Title
+            {\usebeamercolor[fg]{normal text}\normalsize #1\par}
+            \vspace{0.2em}
+            
+            % Very short thin line
+            {\color{mainthemecolor}\rule{0.1\textwidth}{0.4pt}}\par
+            \vspace{0.8em}
+            
+            % Main Subsection Title
+            {\usebeamercolor[fg]{titlelike}\Large #2\par}
+        \end{center}
+        \vfill
+    \end{frame}
+}
+
+\if@autosec
+    \AtBeginSection[]{\sectionframe{\insertsectionhead}{}}
+\fi
 
 \mode
 <all>

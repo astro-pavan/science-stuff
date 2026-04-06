@@ -1,61 +1,131 @@
 \documentclass[11pt, aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+
+% Load your custom theme
 \usetheme[color={0, 0, 255}, header]{CambridgeUK}
 
 \begin{document}
-	\author{Pavan Tanna}
-	\title[Short]{Test}
-	%\subtitle{A test presentation}
-	%\logo{\includegraphics[height=1cm, keepaspectratio]{black_ioa.png}}
-	%\institute{University of Cambridge}
-	%\date{}
-	\subject{Presentations}
-	%\setbeamercovered{transparent}
-	%\setbeamertemplate{navigation symbols}{}
-	
-	\plaintitleframe[black_ioa.png]
-	
-	\imagetitleframe[south]{p}{Earth_From_the_Perspective_of_Artemis_II.jpeg}
-	
-	\section{First section}
-	
-	\subsection{First subsection}
-	
-	\textslide{Test slide}{
-		\begin{itemize}
-			\item Text
-			\item More text
-			\item Even more text
-		\end{itemize}
-	}
-	
-	\imageframe[Habitable zone]{apj460815f8_hr.jpg}
-	
-	\fullscreencover[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}
-	
-	\coversplit[0.3\textwidth]{l}{p}{}{Moon 2.jpg}{
-		\begin{itemize}
-			\item Bullet point
-			\item Another bullet point
-		\end{itemize}
-	}
-	
-	\splitframe[0.6\textwidth]{r}{Key Features}{apj460815f8_hr.jpg}{
-		\begin{itemize}
-			\item First important feature.
-			\item Second important feature.
-			\item Third important feature.
-		\end{itemize}
-	}
-	
-	\textslide{Test slide}{
-		\begin{itemize}
-			\item Text
-			\item More text
-			\item Even more text
-		\end{itemize}
-	}
-	
-	
+
+    % --- METADATA ---
+    \author{Template Tester}
+    \title[Theme Test]{Master Theme Testing Suite}
+    \subtitle{Light vs. Dark Mode Validation}
+    \institute{Institute of Astronomy (IOA)}
+    \date{\today}
+    \subject{Template Testing}
+    
+    % ==========================================
+    % 1. TITLE & DIVIDER TESTING
+    % ==========================================
+    
+    % Test: Standard Title (Light)
+    \titleframe[black_ioa.png]
+    
+    \section{Standard Text Slides}
+    
+    % Test: Section Divider (Light)
+    \sectionframe{1. Standard Text Slides}{Testing Light vs. Dark environments}
+    
+    % Test: Subsection Divider (Dark)
+    \begin{darkslide}
+        \subsectionframe{Standard Text Slides}{Dark Mode Divider Test}
+    \end{darkslide}
+
+    % ==========================================
+    % 2. TEXT SLIDE TESTING
+    % ==========================================
+    
+    % Test: Text Slide (Light)
+    \textframe{Light Mode: Text Slide}{
+        This slide validates the standard Light Mode environment.
+        \vspace{1em}
+        \begin{itemize}
+            \item The background should be pure white.
+            \item The text should be standard black.
+            \item The slide title and horizontal rule should use the custom theme color.
+            \item The footer should use the standard CambridgeUS colors.
+        \end{itemize}
+    }
+    
+    % Test: Text Slide (Dark)
+    \begin{darkslide}
+    \textframe{Dark Mode: Text Slide}{
+        This slide validates the \texttt{darkslide} environment override.
+        \vspace{1em}
+        \begin{itemize}
+            \item The background should now be dark gray.
+            \item This text should automatically be white.
+            \item The horizontal rule should still be the custom theme color.
+            \item The footer blocks should have inverted to dark gray with white text.
+        \end{itemize}
+    }
+    \end{darkslide}
+
+    % ==========================================
+    % 3. SPLIT FRAME TESTING
+    % ==========================================
+    \section{Split Layouts}
+    \sectionframe{2. Split Layouts}{Testing side-by-side columns}
+    
+    % Test: Split Frame (Light)
+    \splitframe[0.5\textwidth]{l}{Light Mode: Split Frame}{apj460815f8_hr.jpg}{
+        \textbf{Light Mode Column Test}
+        \vspace{0.5em}
+        
+        This tests the column layout in standard mode. The image is strictly contained to the left column, and this text sits in the right column against a white background.
+    }
+    
+    % Test: Split Frame (Dark)
+    \begin{darkslide}
+    \splitframe[0.5\textwidth]{r}{Dark Mode: Split Frame}{apj460815f8_hr.jpg}{
+        \textbf{Dark Mode Column Test}
+        \vspace{0.5em}
+        
+        This tests the same column layout, but wrapped in the \texttt{darkslide} environment. The background under this text should be dark gray, while the image sits neatly on the right.
+    }
+    \end{darkslide}
+
+    % ==========================================
+    % 4. TRANSLUCENT BOX TESTING (COVER SPLIT)
+    % ==========================================
+    \section{Cinematic Layouts}
+    \sectionframe{3. Cinematic Layouts}{Testing floating boxes over images}
+    
+    % Test: Cover Split (Light)
+    \coversplitframe[0.45\paperwidth]{l}{p}{Light Mode: Cover Split}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
+        \textbf{White Translucent Box Test}
+        \vspace{0.5em}
+        
+        Because this slide is in standard Light Mode, the floating TikZ box should have a white background with 85\% opacity, and this text should be dark.
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Background: Full-bleed image.
+            \item Box: White.
+            \item Text: Dark.
+        \end{itemize}
+    }
+    
+    % Test: Cover Split (Dark)
+    \begin{darkslide}
+    \coversplitframe[0.45\paperwidth]{r}{p}{Dark Mode: Cover Split}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
+        \textbf{Dark Translucent Box Test}
+        \vspace{0.5em}
+        
+        Because we wrapped this slide in the \texttt{darkslide} environment, the dynamic color variables should have flipped!
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Background: Full-bleed image.
+            \item Box: Dark Gray.
+            \item Text: White.
+        \end{itemize}
+    }
+    \end{darkslide}
+    
+    % ==========================================
+    % 5. CLOSING (IMAGE TITLE SLIDE)
+    % ==========================================
+    
+    % Test: Image Title Slide (No text box, just banner)
+    \imagetitleframe[north]{p}{Earth_From_the_Perspective_of_Artemis_II.jpeg}
+
 \end{document}
