@@ -1,0 +1,290 @@
+\ProvidesPackage{beamerthemeCambridgeUK}
+
+\RequirePackage{tikz}
+
+%\RequirePackage[default]{sourcesanspro} % A very clean, modern alternative to Verdana
+\RequirePackage[light]{raleway}
+\RequirePackage[T1]{fontenc}
+
+
+\mode<presentation>
+
+% --- 1. DEFINE TOGGLES (Defaults are OFF) ---
+\newif\if@showheader
+\@showheaderfalse 
+
+\newif\if@shownav
+\@shownavfalse 
+
+% --- 2. LISTEN FOR PARAMETERS ---
+\DeclareOptionBeamer{color}{\def\mythemecolorval{#1}}
+\DeclareOptionBeamer{header}{\@showheadertrue}
+\DeclareOptionBeamer{nav}{\@shownavtrue}
+
+% --- 3. SET DEFAULT COLOR AND PROCESS ---
+\ExecuteOptionsBeamer{color={0, 80, 150}}
+\ProcessOptionsBeamer
+
+% --- 4. APPLY THE COLOR ---
+\definecolor{mainthemecolor}{RGB}{\mythemecolorval}
+
+\usefonttheme{professionalfonts}
+
+\useinnertheme[shadow=true]{rounded}
+\useoutertheme{infolines}
+\usecolortheme{beaver}
+
+\setbeamerfont{block title}{size={}}
+
+\useinnertheme[shadow=true]{rounded}
+\useoutertheme{infolines}
+
+\setbeamercolor{palette primary}{bg=mainthemecolor,fg=white}
+\setbeamercolor{palette secondary}{bg=mainthemecolor!75,fg=white}
+\setbeamercolor{palette tertiary}{bg=mainthemecolor!50,fg=white}
+\setbeamercolor{titlelike}{bg=white,fg=mainthemecolor}
+\setbeamercolor{item}{fg=mainthemecolor}
+
+\if@showheader
+% If 'header' was typed, do nothing (keep the default CambridgeUS top bar)
+\else
+% Otherwise, erase it for a clean modern look
+\setbeamertemplate{headline}{} 
+\fi
+
+\if@shownav
+% If 'nav' was typed, do nothing (keep default Beamer symbols)
+\else
+% Otherwise, erase them
+\setbeamertemplate{navigation symbols}{} 
+\fi
+
+\setbeamertemplate{itemize items}[circle]
+
+\newcommand{\imageframe}[2][]{ % [#1] is optional title, {#2} is image path
+	\begin{frame}{#1}
+		\vspace{-0.5em} % Slight adjustment to center visually between bars
+		\begin{center}
+			% Scales the image to fit available space without distorting
+			\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{#2}
+		\end{center}
+	\end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Full Screen Cover Image (TikZ Engine)
+% ---------------------------------------------------
+\newcommand{\fullscreencover}[2][l]{ 
+	\def\croplandscape{l}
+	\def\usercrop{#1}
+	
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			% Lock the image precisely to the dead-center of the page
+			\ifx\usercrop\croplandscape
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[height=\paperheight]{#2}
+			};
+			\else
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[width=\paperwidth]{#2}
+			};
+			\fi
+		\end{tikzpicture}
+	\end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Split Frame (Image and Text side-by-side)
+% #1 (Optional): Image Column Width (Defaults to 0.45\textwidth)
+% #2: Image Position ('l' for left, 'r' for right)
+% #3: Title
+% #4: Image Path
+% #5: Text Content
+% ---------------------------------------------------
+\newcommand{\splitframe}[5][0.45\textwidth]{ 
+	\def\alignleft{l}
+	\def\useralign{#2}
+	
+	% The logic now wraps the entire frame, so Beamer never gets confused!
+	\ifx\useralign\alignleft
+	% --- IMAGE ON THE LEFT ---
+	\begin{frame}{#3}
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{#1}
+				\includegraphics[width=\textwidth, keepaspectratio]{#4}
+			\end{column}
+			\begin{column}{\dimexpr\textwidth-#1-0.05\textwidth\relax}
+				#5
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\else
+	% --- IMAGE ON THE RIGHT ---
+	\begin{frame}{#3}
+		\begin{columns}[c, onlytextwidth]
+			\begin{column}{\dimexpr\textwidth-#1-0.05\textwidth\relax}
+				#5
+			\end{column}
+			\begin{column}{#1}
+				\includegraphics[width=\textwidth, keepaspectratio]{#4}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	\fi
+}
+
+% ---------------------------------------------------
+% Template: Text Only
+% #1: Title, #2: Text Content
+% ---------------------------------------------------
+\newcommand{\textslide}[2]{ 
+	\begin{frame}{#1}
+		#2
+	\end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Plain Title Slide
+% #1 (Optional): Path to institutional logo
+% ---------------------------------------------------
+\newcommand{\plaintitleframe}[1][]{ 
+	\begin{frame}[plain]
+		\vfill
+		\begin{center}
+			% Title & Subtitle
+			{\usebeamercolor[fg]{titlelike}\LARGE{\inserttitle}\par}
+			
+			\par\vspace{0.6em} % Snug the line up to the text
+			{\color{mainthemecolor}\hrule height 0.5pt}
+			
+			\ifx\insertsubtitle\@empty\else
+			\vskip0.5em
+			{\large\insertsubtitle\par}
+			\fi
+			
+			\vskip1.5em
+			
+			% Author, Institute, Date
+			{\large\insertauthor\par}
+			\vskip0.5em
+			{\small\insertinstitute\par}
+			\vskip0.5em
+			{\small\insertdate\par}
+			
+			% Optional Logo Logic
+			\if\relax\detokenize{#1}\relax
+			% No logo provided, do nothing
+			\else
+			\vskip1.5em
+			\includegraphics[height=1.5cm, keepaspectratio]{#1}
+			\fi
+		\end{center}
+		\vfill
+	\end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Image Title Slide (TikZ Engine)
+% #1 (Optional): Banner position (north or south). Defaults to south.
+% #2: Image Crop Mode ('l' for landscape, 'p' for portrait)
+% #3: Image Path
+% ---------------------------------------------------
+\newcommand{\imagetitleframe}[3][south]{ 
+	\def\croplandscape{l}
+	\def\usercrop{#2}
+	
+	\begin{frame}[plain]
+		% --- 1. DRAW BACKGROUND IMAGE ---
+		\begin{tikzpicture}[remember picture, overlay]
+			\ifx\usercrop\croplandscape
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[height=\paperheight]{#3}
+			};
+			\else
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[width=\paperwidth]{#3}
+			};
+			\fi
+		\end{tikzpicture}
+		
+		% --- 2. DRAW TRANSPARENT BANNER ---
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[fill=mainthemecolor, fill opacity=0.6, text opacity=1, minimum width=\paperwidth, anchor=#1, inner ysep=20pt] at (current page.#1) {
+				\begin{minipage}{\textwidth}
+					\centering
+					\color{white} 
+					{\LARGE\inserttitle\par}
+					
+					\ifx\insertsubtitle\@empty\else
+					\vskip0.5em
+					{\normalsize\insertsubtitle\par}
+					\fi
+					\vskip1em
+					{\normalsize\insertauthor\par}
+				\end{minipage}
+			};
+		\end{tikzpicture}
+	\end{frame}
+}
+
+% ---------------------------------------------------
+% Template: Floating Textbox over Full Screen Image (TikZ Engine)
+% ---------------------------------------------------
+\newcommand{\coversplit}[6][0.45\paperwidth]{ 
+	\def\alignleft{l}
+	\def\useralign{#2}
+	\def\croplandscape{l}
+	\def\usercrop{#3}
+	\def\notitle{}
+	\def\usertitle{#4}
+	
+	\begin{frame}[plain]
+		% --- 1. DRAW BACKGROUND IMAGE ---
+		\begin{tikzpicture}[remember picture, overlay]
+			\ifx\usercrop\croplandscape
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[height=\paperheight]{#5}
+			};
+			\else
+			\node[inner sep=0pt, anchor=center] at (current page.center) {
+				\includegraphics[width=\paperwidth]{#5}
+			};
+			\fi
+		\end{tikzpicture}
+		
+		% --- 2. DRAW FLOATING TEXTBOX ---
+		\begin{tikzpicture}[remember picture, overlay]
+			\ifx\useralign\alignleft
+			\node[fill=white, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=west, inner sep=15pt] at ([xshift=15pt]current page.west) {
+				\begin{minipage}{#1}
+					\ifx\usertitle\notitle\else
+					{\usebeamercolor[fg]{titlelike}\LARGE #4\par} 
+					\vspace{0.4em}
+					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
+					\vspace{1.5em}
+					\fi
+					#6
+				\end{minipage}
+			};
+			\else
+			\node[fill=white, fill opacity=0.7, text opacity=1, rounded corners=5pt, anchor=east, inner sep=15pt] at ([xshift=-15pt]current page.east) {
+				\begin{minipage}{#1}
+					\ifx\usertitle\notitle\else
+					{\usebeamercolor[fg]{titlelike}\LARGE #4\par} 
+					\vspace{0.4em}
+					{\color{mainthemecolor}\rule{0.8\textwidth}{0.4pt}}\par
+					\vspace{1.5em}
+					\fi
+					#6
+				\end{minipage}
+			};
+			\fi
+		\end{tikzpicture}
+	\end{frame}
+	\setbeamertemplate{background canvas}{}
+}
+
+\mode
+<all>

@@ -1,0 +1,61 @@
+\documentclass[11pt, aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usetheme[color={0, 0, 255}, header]{CambridgeUK}
+
+\begin{document}
+	\author{Pavan Tanna}
+	\title[Short]{Test}
+	%\subtitle{A test presentation}
+	%\logo{\includegraphics[height=1cm, keepaspectratio]{black_ioa.png}}
+	%\institute{University of Cambridge}
+	%\date{}
+	\subject{Presentations}
+	%\setbeamercovered{transparent}
+	%\setbeamertemplate{navigation symbols}{}
+	
+	\plaintitleframe[black_ioa.png]
+	
+	\imagetitleframe[south]{p}{Moon 2.jpg}
+	
+	\section{First section}
+	
+	\subsection{First subsection}
+	
+	\textslide{Test slide}{
+		\begin{itemize}
+			\item Text
+			\item More text
+			\item Even more text
+		\end{itemize}
+	}
+	
+	\imageframe[Habitable zone]{apj460815f8_hr.jpg}
+	
+	\fullscreencover[p]{Moon 2.jpg}
+	
+	\coversplit[0.3\textwidth]{l}{p}{}{Moon 2.jpg}{
+		\begin{itemize}
+			\item Bullet point
+			\item Another bullet point
+		\end{itemize}
+	}
+	
+	\splitframe[0.6\textwidth]{r}{Key Features}{apj460815f8_hr.jpg}{
+		\begin{itemize}
+			\item First important feature.
+			\item Second important feature.
+			\item Third important feature.
+		\end{itemize}
+	}
+	
+	\textslide{Test slide}{
+		\begin{itemize}
+			\item Text
+			\item More text
+			\item Even more text
+		\end{itemize}
+	}
+	
+	
+\end{document}
