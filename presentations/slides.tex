@@ -96,24 +96,26 @@
         \end{itemize}
     }
 
-    % \imageframe[title]{image}
-    % title -- optional frame title
-    % image -- path to image file; scaled to fit the content area, aspect ratio preserved
-    \imageframe[Centred Image Slide: \texttt{\textbackslash imageframe}]{apj460815f8_hr.jpg}
+    % \imageframe[title]{image}[credit]
+    % title  -- optional frame title
+    % image  -- path to image file; scaled to fit the content area, aspect ratio preserved
+    % credit -- optional credit label rendered at the bottom-right corner
+    \imageframe[Centred Image Slide: \texttt{\textbackslash imageframe}]{apj460815f8_hr.jpg}[Kopparapu et al. 2013, ApJ, 765, 131]
 
-    \textframe{\texttt{\textbackslash imageframe[title]\{image\}}}{
+    \textframe{\texttt{\textbackslash imageframe[title]\{image\}[credit]}}{
         The previous slide was produced by \texttt{\textbackslash imageframe}.
         \vspace{0.8em}
         \begin{itemize}
             \item \texttt{[title]} --- optional frame title; omit for a clean full-content image
-            \item \texttt{image} --- path to image file
-            \item Scales to fit the content area with the aspect ratio preserved
+            \item \texttt{image} --- path to image file; scales to fit, aspect ratio preserved
+            \item \texttt{[credit]} --- optional credit label, rendered via \texttt{\textbackslash credit}
         \end{itemize}
     }
 
     % \splitframe[width]{align}{title}{image}{content}
     % width -- image column width (default: 0.45\textwidth)
     % align -- l puts image left; r puts image right
+    % Use \credit{text} inside the content argument to add a plot citation
     \splitframe[0.5\textwidth]{l}{Split Frame: Image Left --- \texttt{\textbackslash splitframe}}{apj460815f8_hr.jpg}{
         Places an image and text side by side.
         \vspace{0.5em}
@@ -121,8 +123,9 @@
             \item \texttt{[width]} --- image column width (default: \texttt{0.45\textbackslash textwidth})
             \item \texttt{align} --- \texttt{l} image left, \texttt{r} image right
             \item \texttt{title}, \texttt{image}, \texttt{content} --- as labelled
-            \item Works inside \texttt{darkslide}
+            \item Use \texttt{\textbackslash credit\{text\}} in the content for plot citations
         \end{itemize}
+        \credit{Kopparapu et al. 2013, ApJ, 765, 131}
     }
 
     \splitframe[0.5\textwidth]{r}{Split Frame: Image Right}{apj460815f8_hr.jpg}{
@@ -141,18 +144,20 @@
     \section{Cinematic Layouts}
     \sectionframe{Cinematic Layouts}{\texttt{\textbackslash coverframe} and \texttt{\textbackslash coversplitframe}}
 
-    % \coverframe[crop]{image}
-    % crop  -- l fits by height (landscape); p fits by width (portrait); default: l
-    % image -- path to background image
-    \coverframe[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}
+    % \coverframe[crop]{image}[credit]
+    % crop   -- l fits by height (landscape); p fits by width (portrait); default: l
+    % image  -- path to background image
+    % credit -- optional; shown as a small dark pill at the bottom-right corner
+    \coverframe[p]{Earth_From_the_Perspective_of_Artemis_II.jpeg}[Credit: NASA/Artemis II]
 
-    \textframe{\texttt{\textbackslash coverframe[crop]\{image\}}}{
-        The previous slide was a \texttt{\textbackslash coverframe} --- a full-bleed image with no overlaid text.
+    \textframe{\texttt{\textbackslash coverframe[crop]\{image\}[credit]}}{
+        The previous slide was a \texttt{\textbackslash coverframe} with a credit label.
         \vspace{0.8em}
         \begin{itemize}
             \item \texttt{[crop]} --- \texttt{l} fits by height; \texttt{p} fits by width (default: \texttt{l})
+            \item \texttt{[credit]} --- optional image credit, rendered by \texttt{\textbackslash credit}
             \item Always a \texttt{[plain]} frame --- no header or footer
-            \item Add a \texttt{*} to show the header and footer bars: \texttt{\textbackslash coverframe*[crop]\{image\}}
+            \item Add a \texttt{*} to show the header and footer bars
         \end{itemize}
     }
 
@@ -165,17 +170,18 @@
         \begin{itemize}
             \item The \texttt{*} keeps the header and footer visible over the image
             \item Useful when the section context or slide number needs to be shown
-            \item The theme colour bar and footer sit on top of the full-bleed image
+            \item The \texttt{[credit]} argument works with \texttt{*} as well
         \end{itemize}
     }
 
-    % \coversplitframe[width]{align}{crop}{title}{image}{content}
-    % width -- textbox width (default: 0.45\paperwidth)
-    % align -- l docks box left; r docks box right
-    % crop  -- l or p (same as \coverframe)
-    % title -- shown as box header with rule; pass {} to omit
+    % \coversplitframe[width]{align}{crop}{title}{image}{content}[credit]
+    % width  -- textbox width (default: 0.45\paperwidth)
+    % align  -- l docks box left; r docks box right
+    % crop   -- l or p (same as \coverframe)
+    % title  -- shown as box header with rule; pass {} to omit
+    % credit -- optional; pass as final argument after content
     \coversplitframe[0.45\paperwidth]{l}{p}{Cover Split: Text Left}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
-        \textbf{\texttt{\textbackslash coversplitframe[w]\{align\}\{crop\}\{title\}\{img\}\{content\}}}
+        \textbf{\texttt{\textbackslash coversplitframe[w]\{align\}\{crop\}\{title\}\{img\}\{content\}[credit]}}
         \vspace{0.5em}
 
         Full-bleed image with a floating translucent text box.
@@ -183,9 +189,9 @@
             \item \texttt{[w]} --- box width (default: \texttt{0.45\textbackslash paperwidth})
             \item \texttt{align} --- \texttt{l} docks box left; \texttt{r} docks right
             \item \texttt{title} --- box header with decorative rule; pass \texttt{\{\}} to omit
-            \item Add \texttt{*} to show the header and footer bars
+            \item \texttt{[credit]} --- optional; appended after the content argument
         \end{itemize}
-    }
+    }[Credit: NASA/Artemis II]
 
     \coversplitframe[0.45\paperwidth]{r}{p}{}{Earth_From_the_Perspective_of_Artemis_II.jpeg}{
         Same command with \texttt{align = r} and an empty title (\texttt{\{\}}).
@@ -283,6 +289,27 @@
         \end{itemize}
     }
     \end{darkslide}
+
+    % ==========================================
+    % CREDITS
+    % ==========================================
+
+    \section{Credits}
+    \sectionframe{Credits}{\texttt{\textbackslash credit}}
+
+    \textframe{\texttt{\textbackslash credit\{text\}}}{
+        A general-purpose credit label, placeable inside any frame body.
+        \vspace{0.8em}
+        \begin{itemize}
+            \item Renders a small dark semi-transparent pill with white italic text at the bottom-right corner
+            \item Works on both light and dark slides, and over full-bleed images
+            \item Call it anywhere inside a \texttt{\textbackslash textframe} or \texttt{\textbackslash splitframe} content argument
+            \item Built in to \texttt{\textbackslash imageframe}, \texttt{\textbackslash coverframe}, and \texttt{\textbackslash coversplitframe} via an optional final \texttt{[credit]} argument
+        \end{itemize}
+        \vspace{0.8em}
+        \texttt{\textbackslash credit\{Author et al. 2025, ApJ, 123, 456\}}
+        \credit{Author et al. 2025, ApJ, 123, 456}
+    }
 
     % ==========================================
     % BACKGROUND IMAGES

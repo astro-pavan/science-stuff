@@ -172,27 +172,49 @@
 \colorlet{transboxtext}{black}
 
 % ---------------------------------------------------
-% Template: Centered Image Slide
-% #1 (Optional): Frame title
-% #2: Image path
+% Utility: Image / Plot Credit
+% \credit{text} -- small attributed label at the bottom-right of the current frame.
+%                  Works inside any frame body or cinematic slide command.
 % ---------------------------------------------------
-\newcommand{\imageframe}[2][]{
+\newcommand{\credit}[1]{%
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[%
+            anchor=south east,%
+            inner sep=4pt,%
+            rounded corners=2pt,%
+            fill=black,%
+            fill opacity=0.35,%
+            text opacity=1,%
+            font=\tiny\itshape,%
+            text=white%
+        ] at ([xshift=-6pt, yshift=18pt]current page.south east) {#1};
+    \end{tikzpicture}%
+}
+
+% ---------------------------------------------------
+% Template: Centered Image Slide
+% \imageframe[title]{image}          -- no credit
+% \imageframe[title]{image}[credit]  -- with credit label
+% ---------------------------------------------------
+\NewDocumentCommand{\imageframe}{O{} m O{}}{
 	\begin{frame}{#1}
-		\vspace{-0.5em} % Slight adjustment to center visually between bars
+		\vspace{-0.5em}
 		\begin{center}
-			% Scales the image to fit available space without distorting
 			\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{#2}
 		\end{center}
+		\def\@imgcredit{#3}%
+		\ifx\@imgcredit\@empty\else\credit{#3}\fi
 	\end{frame}
 }
 
 % ---------------------------------------------------
 % Template: Full Screen Cover Image (TikZ Engine)
-% \coverframe[crop]{image}  -- no bars (default)
-% \coverframe*[crop]{image} -- with header/footer bars
+% \coverframe[crop]{image}           -- no bars, no credit (default)
+% \coverframe*[crop]{image}          -- with header/footer bars
+% \coverframe[crop]{image}[credit]   -- with credit label
 % crop: l = fit by height (landscape), p = fit by width (portrait)
 % ---------------------------------------------------
-\NewDocumentCommand{\coverframe}{s O{l} m}{
+\NewDocumentCommand{\coverframe}{s O{l} m O{}}{
 	\def\croplandscape{l}
 	\def\usercrop{#2}
 	\IfBooleanTF{#1}{\begin{frame}}{\begin{frame}[plain]}
@@ -207,6 +229,8 @@
 			};
 			\fi
 		\end{tikzpicture}
+		\def\@cvrcredit{#4}%
+		\ifx\@cvrcredit\@empty\else\credit{#4}\fi
 	\end{frame}
 }
 
@@ -346,10 +370,11 @@
 
 % ---------------------------------------------------
 % Template: Floating Textbox over Full Screen Image (TikZ Engine)
-% \coversplitframe[width]{align}{crop}{title}{image}{content}  -- no bars (default)
-% \coversplitframe*[width]{align}{crop}{title}{image}{content} -- with header/footer bars
+% \coversplitframe[width]{align}{crop}{title}{image}{content}           -- no bars, no credit
+% \coversplitframe*[width]{align}{crop}{title}{image}{content}          -- with header/footer bars
+% \coversplitframe[width]{align}{crop}{title}{image}{content}[credit]   -- with credit label
 % ---------------------------------------------------
-\NewDocumentCommand{\coversplitframe}{s O{0.45\paperwidth} m m m m m}{
+\NewDocumentCommand{\coversplitframe}{s O{0.45\paperwidth} m m m m m O{}}{
 	\def\alignleft{l}
 	\def\useralign{#3}
 	\def\croplandscape{l}
@@ -401,6 +426,8 @@
 			};
 			\fi
 		\end{tikzpicture}
+		\def\@cspcredit{#8}%
+		\ifx\@cspcredit\@empty\else\credit{#8}\fi
 	\end{frame}
 }
 
