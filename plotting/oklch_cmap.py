@@ -48,25 +48,18 @@ def rgb_to_oklch(rgb):
 def linear_to_srgb(c):
     """Applies the standard sRGB gamma correction."""
     c = np.clip(c, 0, 1) # Clip linear values to gamut before gamma correction
-    return np.where(c <= 0.0031308, 
-                    12.92 * c, 
-                    1.055 * (c ** (1 / 2.4)) - 0.055)
+    return np.where(c <= 0.0031308, 12.92 * c, 1.055 * (c ** (1 / 2.4)) - 0.055)
 
 def oklch_to_rgb(L, C, h):
     a = C * np.cos(h)
     b = C * np.sin(h)
-
-    oklab = np.array([L, a, b])
+    oklab = np.stack([L, a, b], axis=0)
     
-    # Convert Oklab to LMS
-    lms = (M2_inv @ oklab) ** 3
-    
-    # Convert LMS to Linear RGB
-    linear_rgb = LMS_to_RGB @ lms
-    
-    # Convert Linear RGB to standard display sRGB!
+    # Standardize multiplication
+    lms = np.tensordot(M2_inv, oklab, axes=(1, 0)) ** 3
+    linear_rgb = np.tensordot(LMS_to_RGB, lms, axes=(1, 0))
     rgb = linear_to_srgb(linear_rgb)
-
+    
     return rgb
 
 def color_gradient(rgb1, rgb2, n=256):
@@ -79,14 +72,26 @@ def color_gradient(rgb1, rgb2, n=256):
     return rgb_range
 
 def color_spiral(L1, L2, C1, C2, h1, h2, n=256):
-
     L_range = np.linspace(L1, L2, num=n)
     C_range = np.linspace(C1, C2, num=n)
     h_range = np.linspace(h1, h2, num=n)
 
+    # Transpose here to get (N, 3)
     rgb_range = oklch_to_rgb(L_range, C_range, h_range).T
-
     return rgb_range
+
+def color_map_2d(x, y, h_offset=0):
+    L = x/2 + y/2
+    C = 0.2
+    h = 2 * np.arctan2(x, y)+ h_offset
+
+    rgb = oklch_to_rgb(L, C, h)
+    
+    # Move the color channel from index 0 to index 2: (3, H, W) -> (H, W, 3)
+    if rgb.ndim == 3:
+        rgb = np.moveaxis(rgb, 0, -1)
+        
+    return rgb
 
 if __name__ == '__main__':
 
@@ -108,4 +113,11 @@ if __name__ == '__main__':
 
     plt.contourf(X, Y, Z, 200, cmap=my_cmap)
     plt.colorbar()
+    plt.show()
+
+    X, Y = np.meshgrid(np.linspace(0, 1), np.linspace(0, 1))
+
+    rgb = color_map_2d(X, Y)
+
+    plt.imshow(rgb, origin='lower', extent=[0, 1, 0, 1])
     plt.show()
